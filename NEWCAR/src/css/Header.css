@@ -1,0 +1,58 @@
+  
+  header {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 50px 50px;
+  }
+
+  #navbar img {
+    width: 160px;
+    cursor: pointer;
+    transition: all 0.4s;
+    filter: drop-shadow(2px 2px 2px gray);
+  }
+
+  #navbar img:hover {
+    filter: invert(30%);
+  }
+
+  ul {
+    position: relative;
+    display: flex;
+  }
+
+  li { 
+    margin: 0 20px;
+    list-style: none;
+  }
+
+  li a {
+    position: relative;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px 10px;
+    transition: all 0.4s;
+    text-decoration: none;
+    text-shadow: 1px 1px 1px gray;
+  }
+
+  li a:hover {
+    color: black;
+    text-shadow: none;
+    background: #fff;
+    box-shadow: 1px 1px 1px gray;
+  }
+
+  #move2.scrolled, #move3.scrolled, #move4.scrolled {
+    color: black;
+    text-shadow: none;
+    background: #fff;
+    box-shadow: 1px 1px 1px gray;
+  }
