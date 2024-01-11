@@ -1,5 +1,6 @@
 package com.example.newcar.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +19,12 @@ public class LoginController {
     AccountRepository accountRepository;
 
     @PostMapping("/api/login")
-    public List<Account> loginMember(
+    public List<Account> loginAccount(
         @RequestParam("userId") String userId,
         @RequestParam("userPw") String userPw
     ) {
-        List<Account> userInfo = accountRepository.findByUserId(userId);
+        List<Account> userInfo = accountRepository.findByUserIdAndUserPw(userId,userPw);
 
-        if (userInfo.isEmpty() == false) {
-            return userInfo;
-        }
-        else {
-            return null;
-        }
+        return userInfo.isEmpty() ? Collections.emptyList() : userInfo;
     }
 }

@@ -13,4 +13,5 @@ import com.example.newcar.model.Account;
 public interface AccountRepository extends JpaRepository<Account,String> {
     List<Account> findByUserId(String userId);
     List<Account> findByPhoneNumber(String phoneNumber);
+    List<Account> findByUserIdAndUserPw(String userId, String userPw);
 }
