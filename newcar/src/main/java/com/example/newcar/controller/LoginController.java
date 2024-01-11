@@ -24,7 +24,7 @@ public class LoginController {
     ) {
         List<Account> userInfo = accountRepository.findByUserId(userId);
 
-        if (userInfo.size() > 0) {
+        if (userInfo.isEmpty() == false) {
             return userInfo;
         }
         else {

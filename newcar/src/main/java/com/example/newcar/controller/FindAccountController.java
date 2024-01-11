@@ -13,7 +13,7 @@ import com.example.newcar.repository.AccountRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class FindMemberController {
+public class FindAccountController {
     @Autowired
     AccountRepository accountRepository;
 
@@ -23,7 +23,7 @@ public class FindMemberController {
     ) {
         List<Account> userInfo = accountRepository.findByPhoneNumber(phoneNumber);
         
-        if (userInfo == null) {
+        if (userInfo.isEmpty()) {
             return "입력 정보를 다시 확인해주세요";
         }
         else {
@@ -38,7 +38,7 @@ public class FindMemberController {
     ) {
         List<Account> id = accountRepository.findByUserId(userId);
 
-        if (id == null) {
+        if (id.isEmpty()) {
             return "아이디가 존재하지 않습니다";
         }
         else {

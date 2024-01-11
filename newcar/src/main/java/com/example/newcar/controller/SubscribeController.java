@@ -12,7 +12,7 @@ import com.example.newcar.model.Account;
 import com.example.newcar.repository.AccountRepository;
 
 @RestController
-public class SubcribeController {
+public class SubscribeController {
     @Autowired
     AccountRepository accountRepository;
 

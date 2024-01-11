@@ -13,12 +13,12 @@ import com.example.newcar.repository.AccountRepository;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class JoinMemberController {
+public class JoinAccountController {
     @Autowired
     AccountRepository accountRepository;
 
-    @PostMapping("/api/joinMember")
-    public String joinMember(
+    @PostMapping("/api/joinAccount")
+    public String joinAccount(
         @RequestParam("userId") String userId,
         @RequestParam("userPw") String userPw,
         @RequestParam("nickName") String nickName,
@@ -26,7 +26,7 @@ public class JoinMemberController {
     ) {
         List<Account> id = accountRepository.findByUserId(userId);
 
-        if (id.get(0) == null) {
+        if (id.isEmpty()) {
             Account userInfo = new Account();
             userInfo.setUserId(userId);
             userInfo.setUserPw(userPw);
