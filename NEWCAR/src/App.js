@@ -9,7 +9,6 @@ import Main from "./pages/Main";
 import Login from "./pages/Login";
 import Find_info from "./pages/Find_info";
 import Myinfo from "./pages/My_info";
-import Test from "./pages/Test1";
 
 function App() {
 
@@ -18,7 +17,6 @@ function App() {
       <Route path='/' element={<Main/>}/>
       <Route path='/Login' element={<Login/>}/>
       <Route path='/Findinfo' element={<Find_info/>}/>
-      <Route path='/test' element={<Test/>}/>
       <Route path='/Myinfo' element={<Myinfo/>}/>
     </Routes>
   );

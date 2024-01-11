@@ -1,56 +1,56 @@
 import React, { useEffect, useState } from 'react';
 
+
 function Main() {
+
+  const [my_id,set_my_id] = useState(window.sessionStorage.userId)
+  const [my_pw,set_my_pw] = useState(window.sessionStorage.userPw)
 
 
   // 헤더, h1, .circle을 클릭 시 관련 화면으로 이동하는 코드입니다
 
 
   useEffect(() => {
-
+    const buttonMappings = [
+      { id: 'move1', target: 'car_video' },
+      { id: 'move2', target: 3 },
+      { id: 'move3', target: 5 },
+      { id: 'move4', target: 7 },
+      { id: 'down', target: 3 },
+      { id: 'plus1', target: 4 },
+      { id: 'plus2', target: 6 },
+      { id: 'plus3', target: 8 },
+      { id: 'minus1', target: 3 },
+      { id: 'minus2', target: 5 },
+      { id: 'minus3', target: 7 },
+    ];
+  
     const handleMoveClick = (targetSection) => {
-
-      let section;
-
-      if (targetSection === 'car_video') {
-        section = document.querySelector('.car_video');
-      } else {
-        section = document.querySelector(`.sec:nth-child(${targetSection})`);
-      }
+      const section = targetSection === 'car_video' ?
+        document.querySelector('.car_video') :
+        document.querySelector(`.sec:nth-child(${targetSection})`);
   
       if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
       }
-
     };
-
-    document.getElementById('move1').addEventListener('click', () => handleMoveClick('car_video'));
-    document.getElementById('move2').addEventListener('click', () => handleMoveClick(3));
-    document.getElementById('move3').addEventListener('click', () => handleMoveClick(5));
-    document.getElementById('move4').addEventListener('click', () => handleMoveClick(7));
-    document.getElementById('down').addEventListener('click', () => handleMoveClick(3));
-    document.getElementById('plus1').addEventListener('click', () => handleMoveClick(4));
-    document.getElementById('plus2').addEventListener('click', () => handleMoveClick(6));
-    document.getElementById('plus3').addEventListener('click', () => handleMoveClick(8));
-    document.getElementById('minus1').addEventListener('click', () => handleMoveClick(3));
-    document.getElementById('minus2').addEventListener('click', () => handleMoveClick(5));
-    document.getElementById('minus3').addEventListener('click', () => handleMoveClick(7));
-
-    return () => {
-      document.getElementById('move1').removeEventListener('click', () => handleMoveClick('car_video'));
-      document.getElementById('move2').removeEventListener('click', () => handleMoveClick(3));
-      document.getElementById('move3').removeEventListener('click', () => handleMoveClick(5));
-      document.getElementById('move4').removeEventListener('click', () => handleMoveClick(7));
-      document.getElementById('down').removeEventListener('click', () => handleMoveClick(3));
-      document.getElementById('plus1').removeEventListener('click', () => handleMoveClick(4));
-      document.getElementById('plus2').removeEventListener('click', () => handleMoveClick(6));
-      document.getElementById('plus3').removeEventListener('click', () => handleMoveClick(8));
-      document.getElementById('minus1').removeEventListener('click', () => handleMoveClick(3));
-      document.getElementById('minus2').removeEventListener('click', () => handleMoveClick(5));
-      document.getElementById('minus3').removeEventListener('click', () => handleMoveClick(7));
+  
+    const addEventListeners = () => {
+      buttonMappings.forEach(({ id, target }) => {
+        document.getElementById(id)?.addEventListener('click', () => handleMoveClick(target));
+      });
     };
+  
+    const removeEventListeners = () => {
+      buttonMappings.forEach(({ id }) => {
+        document.getElementById(id)?.removeEventListener('click', handleMoveClick);
+      });
+    };
+  
+    addEventListeners();
+  
+    return removeEventListeners;
   }, []);
-
 
   // 아래 코드는 .sec.hidden${index}의 요소를
   // 클릭하면 display가 none이었던 걸 block으로 바꾸고
@@ -76,7 +76,9 @@ function Main() {
     const element = document.querySelector(`.sec.hidden${index}`);
 
     if (element) {
-      element.style.display = 'none';
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 500);
     }
   }; 
 
@@ -155,6 +157,32 @@ function Main() {
 
   }
 
+  // Basic 구독하기 클릭 시 생성되는 Alert입니다.
+
+  const handleShowConfirm = () => {
+  
+    const result = window.confirm('Basic으로 구독하시겠습니까?');
+
+    if (result) {
+      alert('구독이 완료되었습니다');
+    } else {
+      alert('구독이 취소되었습니다');
+    }
+  };
+
+    // Premium 구독하기 클릭 시 생성되는 Alert입니다.
+
+    const handleShowConfirm2 = () => {
+  
+      const result = window.confirm('Premium으로 구독하시겠습니까?');
+  
+      if (result) {
+        alert('구독이 완료되었습니다');
+      } else {
+        alert('구독이 취소되었습니다');
+      }
+    };
+
   return (
     <div className='container-main'>
 
@@ -192,7 +220,7 @@ function Main() {
               {/* 로그인하면 로그인을 내 정보로 바꿔주고 href를 /Myinfo라 해줘 */}
             
               <a href='/Login'>로그인</a>
-
+              {/* <a href='/Myinfo'>내 정보</a> */}
 
             </li>
           </ul>
@@ -394,7 +422,7 @@ function Main() {
                   </svg>
                   사고 시 100% 자사 책임
                 </p>
-                <a href="#" className="reg-btn">구독하기</a>
+                <a href="#" className="reg-btn" onClick={() => handleShowConfirm()}>구독하기</a>
               </div>
             </div>
           </div>
@@ -421,7 +449,7 @@ function Main() {
                   </svg>
                   사고 시 100% 자사 책임
                 </p>
-                <a href="#" className="reg-btn">구독하기</a>
+                <a href="#" className="reg-btn" onClick={() => handleShowConfirm2()}>구독하기</a>
                 
               </div>
             </div>

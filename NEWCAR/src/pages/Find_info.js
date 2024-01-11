@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 
 function Find_info() {
+
+  // 화면 움직이는 코드
+
   const [isFormActive, setIsFormActive] = useState(false);
 
   useEffect(() => {
@@ -24,6 +27,11 @@ function Find_info() {
   const handleSignin = () => {
     setIsFormActive(false);
   };
+
+
+  // 아이디 찾기 시 나오는 Alert
+
+
 
   return (
     <div className='login'>
