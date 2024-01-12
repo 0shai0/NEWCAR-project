@@ -37,31 +37,32 @@ function Login() {
   const [session, setSession] = useState([]);
 
   const handleShowConfirm = async () => {
-    let userId = document.querySelector("#sign_id").value;
-    let userPw = document.querySelector("#sign_pw").value;
-    let url = `http://10.10.21.64:8080/api/login?userId=${userId}&userPw=${userPw}`;
-    
+    const userId = document.querySelector("#login_id").value;
+    const userPw = document.querySelector("#login_pw").value;
+    const url = `http://10.10.21.64:8080/api/login?userId=${userId}&userPw=${userPw}`;
+  
     try {
-      const ajax = await fetch(url, { method: "Post" });
-      const response = await ajax.json();
+      const response = await fetch(url, { method: "POST" });
+      const userData = await response.json();
   
-      if (response != null) {
-        setSession(response[0]);
-        window.sessionStorage.setItem("userId", response[0].userId);
-        window.sessionStorage.setItem("userPw", response[0].userPw);
-        window.sessionStorage.setItem("nickName", response[0].nickName);
-        window.sessionStorage.setItem("phoneNumber", response[0].phoneNumber);
+      if (userData.length > 0) {
+        const user = userData[0];
   
+        Object.entries(user).forEach(([key, value]) => {
+          window.sessionStorage.setItem(key, value);
+        });
+  
+        setSession(user);
         alert("로그인이 완료되었습니다");
         window.location.href = '/';
       } else {
         alert("아이디 혹은 비밀번호가 일치하지 않습니다");
       }
     } catch (error) {
-      console.error("로그인 중 에러 발생:", error);
-      alert("로그인 중에 문제가 발생했습니다");
+      alert("로그인 중 오류가 발생했습니다");
     }
   };
+  
   
 
 

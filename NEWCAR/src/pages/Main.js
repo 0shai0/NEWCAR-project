@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 
 function Main() {
 
-  const [my_id,set_my_id] = useState(window.sessionStorage.userId)
-  const [my_pw,set_my_pw] = useState(window.sessionStorage.userPw)
+  const session = window.sessionStorage;
+  const loginOrMyInfoLink = session.length > 0 ? '/Myinfo' : '/Login';
 
 
   // 헤더, h1, .circle을 클릭 시 관련 화면으로 이동하는 코드입니다
@@ -71,9 +71,9 @@ function Main() {
     }
   };
 
-  const handleMinusClick = (index) => {
+  const handleMinusClick = (idx) => {
 
-    const element = document.querySelector(`.sec.hidden${index}`);
+    const element = document.querySelector(`.sec.hidden${idx}`);
 
     if (element) {
       setTimeout(() => {
@@ -159,15 +159,27 @@ function Main() {
 
   // Basic 구독하기 클릭 시 생성되는 Alert입니다.
 
-  const handleShowConfirm = () => {
+  const handleShowConfirm = async () => {
   
     const result = window.confirm('Basic으로 구독하시겠습니까?');
 
-    if (result) {
-      alert('구독이 완료되었습니다');
-    } else {
+    if (!result) {
       alert('구독이 취소되었습니다');
     }
+
+    // try {
+    //   const url = `http://10.10.21.64:8080/api/subscribe/${userId}?userId=${userId}&userPw=${userPw}`;
+    //   const response = await fetch(url, { method: "PUT" });
+
+    //   if (response.ok) {
+    //     alert('탈퇴가 완료되었습니다');
+    //   } else {
+    //     alert('구독이 취소했습니다');
+    //   }
+    // } catch (error) {
+    //   console.error('Error during account deletion:', error);
+    //   alert('오류가 발생했습니다');
+    // }
   };
 
     // Premium 구독하기 클릭 시 생성되는 Alert입니다.
@@ -176,9 +188,7 @@ function Main() {
   
       const result = window.confirm('Premium으로 구독하시겠습니까?');
   
-      if (result) {
-        alert('구독이 완료되었습니다');
-      } else {
+      if (!result) {
         alert('구독이 취소되었습니다');
       }
     };
@@ -216,11 +226,9 @@ function Main() {
             </li>
             <li>
 
-
               {/* 로그인하면 로그인을 내 정보로 바꿔주고 href를 /Myinfo라 해줘 */}
             
-              <a href='/Login'>로그인</a>
-              {/* <a href='/Myinfo'>내 정보</a> */}
+              <a href={loginOrMyInfoLink}>{session.length > 0 ? '내 정보' : '로그인'}</a>
 
             </li>
           </ul>
@@ -286,6 +294,8 @@ function Main() {
           <div className="minus"></div>
         </div>
 
+        <div>
+
         <div className="services" id="services">    
           <div className="content">
 
@@ -317,7 +327,7 @@ function Main() {
 
             <div className="servicesBox">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-cash-coin" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"/>
+                <path fillRule="evenodd" d="M11 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm5-4a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"/>
                 <path d="M9.438 11.944c.047.596.518 1.06 1.363 1.116v.44h.375v-.443c.875-.061 1.386-.529 1.386-1.207 0-.618-.39-.936-1.09-1.1l-.296-.07v-1.2c.376.043.614.248.671.532h.658c-.047-.575-.54-1.024-1.329-1.073V8.5h-.375v.45c-.747.073-1.255.522-1.255 1.158 0 .562.378.92 1.007 1.066l.248.061v1.272c-.384-.058-.639-.27-.696-.563h-.668zm1.36-1.354c-.369-.085-.569-.26-.569-.522 0-.294.216-.514.572-.578v1.1h-.003zm.432.746c.449.104.655.272.655.569 0 .339-.257.571-.709.614v-1.195l.054.012z"/>
                 <path d="M1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4.083c.058-.344.145-.678.258-1H3a2 2 0 0 0-2-2V3a2 2 0 0 0 2-2h10a2 2 0 0 0 2 2v3.528c.38.34.717.728 1 1.154V1a1 1 0 0 0-1-1H1z"/>
                 <path d="M9.998 5.083 10 5a2 2 0 1 0-3.132 1.65 5.982 5.982 0 0 1 3.13-1.567z"/>
@@ -372,6 +382,7 @@ function Main() {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
 

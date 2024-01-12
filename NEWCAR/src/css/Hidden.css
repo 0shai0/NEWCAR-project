@@ -33,12 +33,13 @@
   .services .content .servicesBox {
     margin: 20px;
     width: 350px;
-    max-width: 340px;
+    max-width: calc(30% - 40px);
     transition: 0.4s;
     text-align: center;
     padding: 30px 10px;
     border-radius: 4px;
     background: white;
+    box-sizing: border-box;
   }
   
   .services .content .servicesBox:hover {

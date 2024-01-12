@@ -3,6 +3,10 @@ import React, { useEffect, useState } from 'react';
 
 function Find_info() {
 
+  
+
+
+
   // 화면 움직이는 코드
 
   const [isFormActive, setIsFormActive] = useState(false);
