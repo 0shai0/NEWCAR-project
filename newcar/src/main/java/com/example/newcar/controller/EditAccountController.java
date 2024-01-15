@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.newcar.model.Account;
 import com.example.newcar.repository.AccountRepository;
 
+import lombok.NonNull;
+
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://10.10.21.66:3000")
 public class EditAccountController {
     @Autowired
     AccountRepository accountRepository;
@@ -26,7 +28,6 @@ public class EditAccountController {
         @RequestParam("phoneNumber") String phoneNumber
     ) {
         Account userInfo = accountRepository.findByUserId(sessionId).get(0);
-
         userInfo.setUserId(userId);
         userInfo.setUserPw(userPw);
         userInfo.setNickName(nickName);
@@ -38,7 +39,7 @@ public class EditAccountController {
 
     @DeleteMapping("/api/account/{sessionId}")
     public String deleteAccount(
-        @PathVariable String sessionId
+        @PathVariable @NonNull String sessionId
     ) {
         accountRepository.deleteById(sessionId);
 

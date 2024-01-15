@@ -12,7 +12,7 @@ import com.example.newcar.model.Account;
 import com.example.newcar.repository.AccountRepository;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://10.10.21.66:3000")
 public class JoinAccountController {
     @Autowired
     AccountRepository accountRepository;
