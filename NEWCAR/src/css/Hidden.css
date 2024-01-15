@@ -154,20 +154,22 @@
     padding: 20px 8px 22px 8px;
   }
   
-  .subscribe .card .box .content a {
+  .subscribe .card .box .content button {
+    border: none;
+    cursor: pointer;
     position: relative;
     color: black;
     font-weight: 500;
     text-align: center;
     text-decoration: none;
-    padding: 8px 20px;
+    padding: 12px 22px;
     transition: 0.2s;
     border-radius: 5px;
     background: #e1cdbd;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
   
-  .subscribe .card .box .content a:hover { 
+  .subscribe .card .box .content button:hover { 
     color: white;
     background: #c5d6df;
   }

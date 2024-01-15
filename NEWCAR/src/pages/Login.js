@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { useNavigate  } from 'react-router-dom';
 
 function Login() {
 
@@ -9,6 +9,7 @@ function Login() {
 
 
   const [isFormActive, setIsFormActive] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const signupBtn = document.querySelector('.signupBtn');
@@ -39,61 +40,107 @@ function Login() {
   const handleShowConfirm = async () => {
     const userId = document.querySelector("#login_id").value;
     const userPw = document.querySelector("#login_pw").value;
+
+    if (!userId || !userPw) {
+      alert("아이디와 비밀번호를 입력해주세요.");
+      return;
+    } 
+
+    const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
+    const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
+
+    if (!userIdPattern.test(userId)) {
+      alert("아이디는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!userPwPattern.test(userPw)) {
+      alert("비밀번호는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
     const url = `http://10.10.21.64:8080/api/login?userId=${userId}&userPw=${userPw}`;
-  
-    try {
-      const response = await fetch(url, { method: "POST" });
-      const userData = await response.json();
-  
-      if (userData.length > 0) {
-        const user = userData[0];
-  
-        Object.entries(user).forEach(([key, value]) => {
-          window.sessionStorage.setItem(key, value);
-        });
-  
-        setSession(user);
-        alert("로그인이 완료되었습니다");
-        window.location.href = '/';
-      } else {
-        alert("아이디 혹은 비밀번호가 일치하지 않습니다");
-      }
-    } catch (error) {
-      alert("로그인 중 오류가 발생했습니다");
+    const response = await fetch(url, { method: "POST" });
+    const userData = await response.json();
+
+    if (userData.length > 0) {
+      const user = userData[0];
+
+      const { kind, ...userWithoutKind } = user;
+      const kindValue = kind ? kind.kind : null;
+      const kindPrice = kind ? kind.price : null;
+
+      const userWithKindSeparated = {
+        ...userWithoutKind,
+        kind: kindValue,
+        price: kindPrice,
+      };
+
+      Object.entries(userWithKindSeparated).forEach(([key, value]) => {
+        window.sessionStorage.setItem(key, value);
+      });
+
+      setSession(user);
+      alert("로그인이 완료되었습니다.");
+      window.location.href = '/';
+    } else {
+      alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
     }
   };
-  
-  
 
 
     // 회원가입의 정보를 보내기 위한 코드
 
-    const handleShowConfirm2 = async () => {
-      try {
-        let nickName = document.querySelector("#sign_nickname").value
-        let userId = document.querySelector("#sign_id").value
-        let userPw = document.querySelector("#sign_pw").value
-        let phoneNumber = document.querySelector("#sign_phone").value
-    
-        const url = `http://10.10.21.64:8080/api/joinAccount?nickName=${nickName}&userId=${userId}`
-                    +`&userPw=${userPw}&phoneNumber=${phoneNumber}`; 
-    
-        const ajax = await fetch(url, { method: "POST" }); 
-        const responseText = await ajax.text();
-    
-        alert(responseText);
-    
-        if (responseText.includes("가입되었습니다")) {
-          window.location.href = '/Login';
-        }
-      } catch (error) {
-        console.error('handleShowConfirm2 에러', error);
-      }
-    }
-    
-  
-  
+  const handleShowConfirm2 = async () => {
 
+    let userId = document.querySelector("#sign_id").value
+    let userPw = document.querySelector("#sign_pw").value
+    let nickName = document.querySelector("#sign_nickname").value
+    let phoneNumber = document.querySelector("#sign_phone").value
+
+    if (!nickName || !userId || !userPw || !phoneNumber) {
+      alert("개인 정보를 작성해주십시요.");
+      return;
+    } 
+
+    const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
+    const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
+    const nickNamePattern = /^[a-zA-Z0-9가-힣]+$/;
+    const phoneNumberPattern = /^[0-9]*$/;  
+
+    if (!userIdPattern.test(userId)) {
+      alert("아이디는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!userPwPattern.test(userPw)) {
+      alert("비밀번호는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!nickNamePattern.test(nickName)) {
+      alert("닉네임는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!phoneNumberPattern.test(phoneNumber)) {
+      alert("전화번호는 숫자만 입력해주세요.");
+      return;
+    }
+
+    const url = `http://10.10.21.64:8080/api/joinAccount?nickName=${nickName}&userId=${userId}`
+                +`&userPw=${userPw}&phoneNumber=${phoneNumber}`; 
+
+    const response = await fetch(url, { method: "POST" }); 
+
+    if (response.ok) {
+      window.location.href = "/Login";
+      alert("회원가입이 완료되었습니다");
+    }     
+  }
+    
+
+  
   return (
     <div className='login'>
       <a href='/' className='login_logo'><div><img src='./images/Login_logo.png'/></div></a>

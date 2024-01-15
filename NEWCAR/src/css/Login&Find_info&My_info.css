@@ -212,7 +212,23 @@
 
   /* Login, Find_info, My_info 공통 CSS는 여기까지 */
 
+  /* FindInfo 추가 CSS는 아래부터 */
+
+  #newPw {
+    display: none;
+  }
+
+  /* FindInfo 추가 CSS는 여기까지 */
+
   /* My_info 추가 CSS는 아래부터 */
+
+  .formBx .form form .info_button input[type='submit'] {
+    border: none;
+    color: white;
+    cursor: pointer;
+    max-width: 90px;
+    background: #bdcdd6;
+  }
   
   .sub_list {
     display: flex;

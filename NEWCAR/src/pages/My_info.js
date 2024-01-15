@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function My_info() {
 
@@ -10,18 +10,61 @@ function My_info() {
   const [userPw, setUserPw] = useState('');
   const [nickName, setNickname] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [kind, setKind] = useState('');
+  const [subscribeStart, setSubscribeStart] = useState('');
+  const [subscribeEnd, setSubscribeEnd] = useState('');
+  const [days, setDays] = useState('');
+  const [price, setPrice] = useState('');
 
   useEffect(() => {
     const storedUserId = session.getItem('userId');
     const storedUserPw = session.getItem('userPw');
     const storedNickName = session.getItem('nickName');
     const storedPhoneNumber = session.getItem('phoneNumber');
+    const storedKind = session.getItem('kind');
+    const storedSubscribeStart = session.getItem('subscribeStart');
+    const storedDays = session.getItem('days');
+    const storedPrice = session.getItem('price');
+
 
     setUserId(storedUserId || '');
     setUserPw(storedUserPw || '');
     setNickname(storedNickName || '');
     setPhoneNumber(storedPhoneNumber || '');
+    setKind(storedKind || '');
+    setSubscribeStart(storedSubscribeStart ? storedSubscribeStart.substring(0, 10) : '');
+    setDays(storedDays || '');
+    setPrice(storedPrice || '');
+
+    if (storedSubscribeStart && storedDays) {
+      const startDate = new Date(storedSubscribeStart);
+      if (!isNaN(startDate.getTime())) {
+        const endDate = new Date(startDate.getTime() + (parseInt(storedDays, 10) * 24 * 60 * 60 * 1000));
+        setSubscribeEnd(endDate.toISOString().substring(0, 10));
+      } else {
+        setKind(null);
+        setSubscribeStart(null);
+        setSubscribeEnd(null);
+        setPrice(null);
+      }
+    }
   }, []);
+
+
+  useEffect(() => {
+    const userId = sessionStorage.getItem('userId');
+    const userPw = sessionStorage.getItem('userPw');
+    const nickName = sessionStorage.getItem('nickName');
+    const phoneNumber = sessionStorage.getItem('phoneNumber');
+
+    if (!userId || !userPw || !nickName || !phoneNumber) {     
+      navigate('/Login');   
+      alert("내 정보는 로그인 후에 접속하실 수 있습니다.");  
+    }
+  }, [navigate]);
+
+
+  // 내 정보 수정 시 나오는 alert
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -29,7 +72,32 @@ function My_info() {
     const result = window.confirm('내 정보를 수정하시겠습니까?');
   
     if (!result) {
-      alert('수정이 취소되었습니다');
+      alert('수정이 취소되었습니다.');
+      return;
+    }
+
+    const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
+    const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
+    const nickNamePattern = /^[a-zA-Z0-9가-힣]+$/;
+    const phoneNumberPattern = /^[0-9]*$/;  
+
+    if (!userIdPattern.test(userId)) {
+      alert("아이디는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!userPwPattern.test(userPw)) {
+      alert("비밀번호는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!nickNamePattern.test(nickName)) {
+      alert("닉네임는 문자(단어)와 숫자만 입력해주세요.");
+      return;
+    }
+
+    if (!phoneNumberPattern.test(phoneNumber)) {
+      alert("전화번호는 숫자만 입력해주세요.");
       return;
     }
   
@@ -43,14 +111,14 @@ function My_info() {
         session.setItem('userPw', userPw);
         session.setItem('nickName', nickName);
         session.setItem('phoneNumber', phoneNumber);
-        alert('수정이 완료되었습니다');
+        alert('수정이 완료되었습니다.');
       } else {
         window.location.href = "/Myinfo";
-        alert('수정을 취소했습니다');
+        alert('수정을 취소했습니다.');
       }
     } catch (error) {
       console.error('Error during account update:', error);
-      alert('오류가 발생했습니다');
+      alert('오류가 발생했습니다.');
     }
   };
 
@@ -61,7 +129,7 @@ function My_info() {
     e.preventDefault();
     window.location.href = "/";
     session.clear();
-    alert('로그아웃 되었습니다');
+    alert('로그아웃 되었습니다.');
   };
 
 
@@ -71,17 +139,10 @@ function My_info() {
 
     e.preventDefault();
 
-    const userId = session.getItem('userId');
-
-    if (!userId) {
-      alert('로그인을 해주시길 바랍니다');
-      return;
-    }
-
     const confirmResult = window.confirm('정말로 탈퇴하시겠습니까?');
 
     if (!confirmResult) {
-      alert('탈퇴가 취소되었습니다');
+      alert('탈퇴가 취소되었습니다.');
       return;
     }
 
@@ -92,13 +153,13 @@ function My_info() {
       if (response.ok) {
         navigate("/");
         session.clear();
-        alert('탈퇴가 완료되었습니다');
+        alert('탈퇴가 완료되었습니다.');
       } else {
-        alert('탈퇴를 취소했습니다');
+        alert('탈퇴를 취소했습니다.');
       }
     } catch (error) {
       console.error('Error during account deletion:', error);
-      alert('오류가 발생했습니다');
+      alert('오류가 발생했습니다.');
     }
   };
   
@@ -109,29 +170,15 @@ function My_info() {
 
   // 구독 변경 시 나오는 Alert
 
-  const handleShowConfirm2 = () => {
-       
-    const result = window.confirm('구독 종류를 변경하시겠습니까?');
-
-    if (result) {
-      alert('구독 종류가 변경되었습니다');
-    } else {
-      alert('구독 변경이 취소되었습니다');
-    }
+  const handleShowConfirm2 = () => {       
+    alert('구독 변경은 아직 구현하지 못했습니다.');
   };
 
 
   // 구독 취소 시 나오는 Alert
 
-  const handleShowConfirm3 = () => {
-       
-    const result = window.confirm('구독을 취소하시겠습니까?');
-
-    if (result) {
-      alert('구독이 취소되었습니다');
-    } else {
-      alert('구독 변경이 취소되었습니다');
-    }
+  const handleShowConfirm3 = () => {       
+    alert('구독 취소는 아직 구현하지 못했습니다.');
   };
 
 
@@ -210,10 +257,11 @@ function My_info() {
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
-
-            <input type='submit' value='수정' onClick={handleUpdate} />
-            {session.length > 0 && <input type='submit' value='로그아웃' onClick={handleLogout} />}
-            <input type='submit' value='회원탈퇴' onClick={handleDelete} />
+            <div className='info_button'>
+              <input type='submit' value='수정' onClick={handleUpdate} />            
+              {session.length > 0 && <input type='submit' value='로그아웃' onClick={handleLogout} />}
+              <input type='submit' value='회원탈퇴' onClick={handleDelete} />
+            </div>
           </form>;
           </div>
 
@@ -224,15 +272,15 @@ function My_info() {
               <div className='sub_list'>
                 <div className='sub_type'>
                   <p>구독 종류</p>
-                  <p>Basic</p>
+                  <p>{kind || '구독 X'}</p>
                 </div>
                 <div className='sub_period'>
                   <p>구독 기간</p>
-                  <p>2023-01-09 ~ 2023-02-09</p>
+                  <p>{subscribeStart || '시작 날짜'} ~ {subscribeEnd || '끝나는 날짜'}</p>
                 </div>             
                 <div className='sub_price'>
                   <p>가격</p>
-                  <p>10만원</p>
+                  <p>{price || '??'}만원</p>
                 </div>
               </div>
               <div className='sub_btn_list'>

@@ -4,8 +4,25 @@ import React, { useEffect, useState } from 'react';
 function Main() {
 
   const session = window.sessionStorage;
+  const [session1, setSession] = useState([]);
   const loginOrMyInfoLink = session.length > 0 ? '/Myinfo' : '/Login';
 
+  const [userId, setUserId] = useState('');
+  const [kind, setUserPw] = useState('');
+  const [subscribeStart, setNickname] = useState('');
+  const [days, setPhoneNumber] = useState('');
+
+  useEffect(() => {
+    const storedUserId = session.getItem('userId');
+    const storedKind = session.getItem('kind');
+    const storedSubscribeStart = session.getItem('subscribeStart');
+    const storedDays = session.getItem('days');
+
+    setUserId(storedUserId || '');
+    setUserPw(storedKind || '');
+    setNickname(storedSubscribeStart || '');
+    setPhoneNumber(storedDays || '');
+  }, []);
 
   // 헤더, h1, .circle을 클릭 시 관련 화면으로 이동하는 코드입니다
 
@@ -157,6 +174,7 @@ function Main() {
 
   }
 
+
   // Basic 구독하기 클릭 시 생성되는 Alert입니다.
 
   const handleShowConfirm = async () => {
@@ -164,34 +182,98 @@ function Main() {
     const result = window.confirm('Basic으로 구독하시겠습니까?');
 
     if (!result) {
-      alert('구독이 취소되었습니다');
+      window.location.href = "/";
+      alert('구독을 취소했습니다.');
+    } else if (!window.sessionStorage.getItem('userId')) {
+      window.location.href = "/Login";
+      alert('구독 서비스는 로그인 후에 이용하실 수 있습니다.');
     }
 
-    // try {
-    //   const url = `http://10.10.21.64:8080/api/subscribe/${userId}?userId=${userId}&userPw=${userPw}`;
-    //   const response = await fetch(url, { method: "PUT" });
+    
 
-    //   if (response.ok) {
-    //     alert('탈퇴가 완료되었습니다');
-    //   } else {
-    //     alert('구독이 취소했습니다');
-    //   }
-    // } catch (error) {
-    //   console.error('Error during account deletion:', error);
-    //   alert('오류가 발생했습니다');
-    // }
+    const url = `http://10.10.21.64:8080/api/subscribe/${userId}?kind=Basic`;
+    const response = await fetch(url, { method: "PUT" });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.length === 0) {
+        window.location.href = "/Myinfo";
+        alert('이미 구독이 되어있습니다. \n구독 종류를 변경하시려면 [내 정보] -> [구독내역]에서 \n변경해주시길 바랍니다.');
+      } else {
+        const user = data[0];
+
+        const { kind, ...userWithoutKind } = user;
+        const { kind: kindValue, ...kindWithoutKey } = kind;
+
+        const userWithKindSeparated = {
+          ...userWithoutKind,
+          kind: kindValue,
+          ...kindWithoutKey,
+        };
+
+        Object.entries(userWithKindSeparated).forEach(([key, value]) => {
+          window.sessionStorage.setItem(key, value);
+        });
+  
+        setSession(user);
+        window.location.href = "/";
+        alert('구독이 완료되었습니다.');
+      }
+    } else {
+      alert('구독을 취소했습니다.');
+    }
   };
 
-    // Premium 구독하기 클릭 시 생성되는 Alert입니다.
 
-    const handleShowConfirm2 = () => {
+  // Premium 구독하기 클릭 시 생성되는 Alert입니다.
+
+  const handleShowConfirm2 = async () => {
+
   
-      const result = window.confirm('Premium으로 구독하시겠습니까?');
+    const result = window.confirm('Premium으로 구독하시겠습니까?');
+
+    if (!result) {
+      window.location.href = "/";
+      alert('구독을 취소했습니다.');
+    } else if (!window.sessionStorage.getItem('userId')) {
+      window.location.href = "/Login";
+      alert('구독 서비스는 로그인 후에 이용하실 수 있습니다.');
+    }
+
+
+    const url = `http://10.10.21.64:8080/api/subscribe/${userId}?kind=Premium`;
+    const response = await fetch(url, { method: "PUT" });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data) && data.length === 0) {
+        window.location.href = "/Myinfo";
+        alert('이미 구독이 되어있습니다. \n구독 종류를 변경하시려면 [내 정보] -> [구독내역]에서 \n변경해주시길 바랍니다.');
+      } else {
+        const user = data[0];
+
+        const { kind, ...userWithoutKind } = user;
+        const { kind: kindValue, ...kindWithoutKey } = kind;
+
+        const userWithKindSeparated = {
+          ...userWithoutKind,
+          kind: kindValue,
+          ...kindWithoutKey,
+        };
+
+        Object.entries(userWithKindSeparated).forEach(([key, value]) => {
+          window.sessionStorage.setItem(key, value);
+        });
   
-      if (!result) {
-        alert('구독이 취소되었습니다');
+        setSession(user);
+        window.location.href = "/";
+        alert('구독이 완료되었습니다.');
       }
-    };
+    } else {
+      alert('구독을 취소했습니다.');
+    }    
+  };
 
   return (
     <div className='container-main'>
@@ -433,7 +515,7 @@ function Main() {
                   </svg>
                   사고 시 100% 자사 책임
                 </p>
-                <a href="#" className="reg-btn" onClick={() => handleShowConfirm()}>구독하기</a>
+                <button type='button' className="reg-btn" onClick={() => handleShowConfirm()}>구독하기</button>
               </div>
             </div>
           </div>
@@ -460,7 +542,7 @@ function Main() {
                   </svg>
                   사고 시 100% 자사 책임
                 </p>
-                <a href="#" className="reg-btn" onClick={() => handleShowConfirm2()}>구독하기</a>
+                <button type='button' className="reg-btn" onClick={() => handleShowConfirm2()}>구독하기</button>
                 
               </div>
             </div>
