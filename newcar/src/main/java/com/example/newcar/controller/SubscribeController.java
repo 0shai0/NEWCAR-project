@@ -1,6 +1,8 @@
 package com.example.newcar.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,12 +24,12 @@ public class SubscribeController {
     SubscribeRepository subscribeRepository;
 
     @PutMapping("/api/subscribe/{sessionId}")
-    public String subscribe(
+    public List<Account> subscribe(
         @PathVariable String sessionId,
         @RequestParam("kind") String kind
     ) {
         if (accountRepository.findByUserId(sessionId).get(0).getDays() > 0) {
-            return "이미 구독 신청이 되어있습니다";
+            return Collections.emptyList();
         }
         else {
             Account userInfo = accountRepository.findByUserId(sessionId).get(0);
@@ -36,7 +38,7 @@ public class SubscribeController {
             userInfo.setDays(30);
             accountRepository.save(userInfo);
 
-            return "구독 신청 완료";
+            return accountRepository.findByUserId(sessionId);
         }
     }
 }
