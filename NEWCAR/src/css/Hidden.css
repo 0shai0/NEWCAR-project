@@ -28,6 +28,7 @@
     justify-content: center;
     flex-wrap: wrap;
     flex-direction: row;
+    width: 1300px;
   }
   
   .services .content .servicesBox {
