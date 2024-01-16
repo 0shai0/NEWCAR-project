@@ -229,7 +229,7 @@ function My_info() {
               readOnly
             />
             <input
-              type='password'
+              type=''
               placeholder='비밀번호'
               name='userPw'
               value={userPw}
