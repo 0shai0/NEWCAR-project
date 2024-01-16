@@ -14,6 +14,7 @@ Position
 2024년 01월 05일 ~ 2024년 01월 16일 (12일)
 
 프로그램은 React, SpringBoot 이용해 구현
+협업 툴 : GitHub
 
 
 프로젝트 목적
