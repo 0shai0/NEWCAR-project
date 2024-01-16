@@ -20,21 +20,19 @@ public class EditAccountController {
     AccountRepository accountRepository;
 
     @PutMapping("/api/account/{sessionId}")
-    public String editAccount(
+    public boolean editAccount(
         @PathVariable String sessionId,
-        @RequestParam("userId") String userId,
         @RequestParam("userPw") String userPw,
         @RequestParam("nickName") String nickName,
         @RequestParam("phoneNumber") String phoneNumber
     ) {
         Account userInfo = accountRepository.findByUserId(sessionId).get(0);
-        userInfo.setUserId(userId);
         userInfo.setUserPw(userPw);
         userInfo.setNickName(nickName);
         userInfo.setPhoneNumber(phoneNumber);
         accountRepository.save(userInfo);
 
-        return "수정 완료";
+        return true;
     }
 
     @DeleteMapping("/api/account/{sessionId}")
