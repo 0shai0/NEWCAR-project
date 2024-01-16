@@ -251,10 +251,10 @@ function My_info() {
             />
             <div className='info_button'>
               <input type='submit' value='수정' onClick={handleUpdate} />            
-              {session.length > 0 && <input type='submit' value='로그아웃' onClick={handleLogout} />}
+              <input type='submit' value='로그아웃' onClick={handleLogout} />
               <input type='submit' value='회원탈퇴' onClick={handleDelete} />
             </div>
-          </form>;
+          </form>
           </div>
 
           <div className={`form signupform ${isFormActive ? 'active' : ''}`}>
