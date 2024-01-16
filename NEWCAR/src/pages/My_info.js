@@ -103,7 +103,7 @@ function My_info() {
 
     }
 
-    const url = `http://10.10.21.64:8080/api/account/${userId}?userId=${userId}&userPw=${userPw}&nickName=${nickName}&phoneNumber=${phoneNumber}`;
+    const url = `http://10.10.21.64:8080/api/account/${userId}?userPw=${userPw}&nickName=${nickName}&phoneNumber=${phoneNumber}`;
     const response = await fetch(url, { method : 'PUT' });
 
     if (response.ok) {
@@ -116,7 +116,7 @@ function My_info() {
 
     } else {
       window.location.href = "/Myinfo";
-      alert('동일한 아이디기 존재하여 아이디를 수정하실 수 없습니다.');
+      alert('오류가 발생했습니다.');
     }
   };
 
@@ -225,7 +225,8 @@ function My_info() {
               placeholder='아이디'
               name='userId'
               value={userId}
-              onChange={(e) => setUserId(e.target.value)}
+              onClick={() => alert('아이디는 변경할 수 없습니다.')}
+              readOnly
             />
             <input
               type='text'
