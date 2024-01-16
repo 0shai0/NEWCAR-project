@@ -222,12 +222,20 @@
 
   /* My_info 추가 CSS는 아래부터 */
 
+  .formBx .form form .info_button {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .formBx .form form .info_button input[type='submit'] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     color: white;
     cursor: pointer;
-    max-width: 90px;
-    background: #bdcdd6;
+    width: 80px;
+    background: #bdcdd6;   
   }
   
   .sub_list {
