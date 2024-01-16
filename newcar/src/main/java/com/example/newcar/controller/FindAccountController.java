@@ -24,26 +24,34 @@ public class FindAccountController {
         @RequestParam("phoneNumber") String phoneNumber
     ) {
         List<Account> userInfo = accountRepository.findByPhoneNumber(phoneNumber);
+	List<String> idInfo = new ArrayList<>();
+
+        for (int i = 0; i < userInfo.size(); i++) {
+            idInfo.add(userInfo.get(i).getUserId());
+        }
         
         return userInfo.isEmpty() ? Collections.emptyList() : userInfo;
     }
 
     @PostMapping("/api/findPw")
-    public String findPw(
+    public List<Account> findPw(
         @RequestParam("userId") String userId,
         @RequestParam("phoneNumber") String phoneNumber
     ) {
         List<Account> id = accountRepository.findByUserId(userId);
+        List<Account> newInfo = new ArrayList<>();
 
         if (id.isEmpty()) {
-            return "아이디가 존재하지 않습니다";
+            return newInfo;
         }
         else {
             if (id.get(0).getPhoneNumber().equals(phoneNumber)) {
-                return "비밀번호를 재설정해주세요";
+                resetId = userId;
+
+                return id;
             }
             else {
-                return "전화번호가 일치하지 않습니다";
+                return newInfo;
             }
         }
     }
