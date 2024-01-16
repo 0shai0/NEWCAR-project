@@ -45,4 +45,11 @@ public class EditAccountController {
 
         return "탈퇴 완료";
     }
+
+    @GetMapping("/api/mySubscribe/{sessionId}")
+    public List<Account> selectSubscribe(
+        @PathVariable String sessionId
+    ) {
+        return accountRepository.findByUserId(sessionId);
+    }
 }
