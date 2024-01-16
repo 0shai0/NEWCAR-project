@@ -66,6 +66,14 @@
     cursor: pointer;
   }
   
+  .sec:nth-child(9) h1 {
+    z-index: 3;
+    color: white;
+    font-size: 4em;
+    font-weight: 600;
+    cursor: none;
+  }
+
   .film::before {
     position: absolute;
     z-index: 1;
@@ -84,16 +92,13 @@
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
-    background-blend-mode: multiply;
   }
 
   .sec:nth-child(5) {
     background: url(../../public/images/Familiy.png);
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
-    background-blend-mode: multiply;
-    
+    background-attachment: fixed; 
   }
 
   .sec:nth-child(7) {
@@ -101,7 +106,6 @@
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    background-blend-mode: multiply; 
   }
 
   .sec:nth-child(9) {
@@ -109,5 +113,4 @@
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    background-blend-mode: multiply;
   }

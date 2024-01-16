@@ -173,3 +173,17 @@
     color: white;
     background: #c5d6df;
   }
+
+  /* 아래는 작은 화면일 때 */
+
+  @media (max-width: 1000px) {
+
+    .services .content .servicesBox p {
+      font-size: 8.6px;
+    }
+
+    .subscribe .card {
+      margin: 10px;
+    }
+
+  }

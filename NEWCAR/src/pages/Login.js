@@ -1,43 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef  } from 'react';
 import { useNavigate  } from 'react-router-dom';
 
 function Login() {
 
+  const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
+  const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
+  const nickNamePattern = /^[a-zA-Z0-9가-힣]+$/;
+  const phoneNumberPattern = /^[0-9]*$/;  
 
 
-  // 화면 움지이기 위한 코드
-
-
-  const [isFormActive, setIsFormActive] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const signupBtn = document.querySelector('.signupBtn');
-    const signinBtn = document.querySelector('.signinBtn');
-    
-    signupBtn.addEventListener('click', handleSignup);
-    signinBtn.addEventListener('click', handleSignin);
-
-    return () => {
-      signupBtn.removeEventListener('click', handleSignup);
-      signinBtn.removeEventListener('click', handleSignin);
-    };
-  }, []);
-
-  const handleSignup = () => {
-    setIsFormActive(true);
-  };
-
-  const handleSignin = () => {
-    setIsFormActive(false);
-  };
-
-
-  // DB와 연결 후 로그인 시 나오는 Alert을 나오게 하기 위한 코드
+  // DB와 연결 후 로그인 시 생성되는 Alert입니다
 
   const [session, setSession] = useState([]);
 
   const handleShowConfirm = async () => {
+
     const userId = document.querySelector("#login_id").value;
     const userPw = document.querySelector("#login_pw").value;
 
@@ -46,16 +23,8 @@ function Login() {
       return;
     } 
 
-    const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
-    const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
-
-    if (!userIdPattern.test(userId)) {
-      alert("아이디는 문자(단어)와 숫자만 입력해주세요.");
-      return;
-    }
-
-    if (!userPwPattern.test(userPw)) {
-      alert("비밀번호는 문자(단어)와 숫자만 입력해주세요.");
+    if (!userIdPattern.test(userId) || !userPwPattern.test(userPw)) {
+      alert("공백, /, ?등의 특수문자는 입력하실 수 없습니다.");
       return;
     }
 
@@ -89,7 +58,7 @@ function Login() {
   };
 
 
-    // 회원가입의 정보를 보내기 위한 코드
+  // 회원가입의 정보를 작성 시 생성되는 Alert입니다
 
   const handleShowConfirm2 = async () => {
 
@@ -103,29 +72,13 @@ function Login() {
       return;
     } 
 
-    const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
-    const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
-    const nickNamePattern = /^[a-zA-Z0-9가-힣]+$/;
-    const phoneNumberPattern = /^[0-9]*$/;  
+    
+    if (!userIdPattern.test(userId) || !userPwPattern.test(userPw) || 
+    !nickNamePattern.test(nickName) || !phoneNumberPattern.test(phoneNumber)) {
 
-    if (!userIdPattern.test(userId)) {
-      alert("아이디는 문자(단어)와 숫자만 입력해주세요.");
+      alert("공백, /, ?등의 특수문자는 입력하실 수 없습니다.");
       return;
-    }
 
-    if (!userPwPattern.test(userPw)) {
-      alert("비밀번호는 문자(단어)와 숫자만 입력해주세요.");
-      return;
-    }
-
-    if (!nickNamePattern.test(nickName)) {
-      alert("닉네임는 문자(단어)와 숫자만 입력해주세요.");
-      return;
-    }
-
-    if (!phoneNumberPattern.test(phoneNumber)) {
-      alert("전화번호는 숫자만 입력해주세요.");
-      return;
     }
 
     const url = `http://10.10.21.64:8080/api/joinAccount?nickName=${nickName}&userId=${userId}`
@@ -136,8 +89,56 @@ function Login() {
     if (response.ok) {
       window.location.href = "/Login";
       alert("회원가입이 완료되었습니다");
-    }     
+    } else {
+      alert("동일한 아이디가 이미 존재합니다");
+    }
   }
+
+
+  // 화면이 움지이기 위한 코드입니다
+
+
+  const [isFormActive, setIsFormActive] = useState(false);
+
+  const handleSignup = () => {
+
+    const userIdInput = document.getElementById('sign_id');
+    
+    setIsFormActive(true);
+    setTimeout(() => {
+    userIdInput.focus();
+    }, 600);
+  };
+
+  const handleSignin = () => {
+
+    const userIdInput = document.getElementById('login_id');
+
+    setIsFormActive(false);
+    userIdInput.focus();   
+  };
+
+  useEffect(() => {
+    const signupBtn = document.querySelector('.signupBtn');
+    const signinBtn = document.querySelector('.signinBtn');
+    
+    signupBtn.addEventListener('click', handleSignup);
+    signinBtn.addEventListener('click', handleSignin);
+
+    return () => {
+      signupBtn.removeEventListener('click', handleSignup);
+      signinBtn.removeEventListener('click', handleSignin);
+    };
+  }, [handleSignup, handleSignin]);
+
+
+  // input에 focus 시키는 코드입니다
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
     
 
   
@@ -160,7 +161,7 @@ function Login() {
           <div className={`form signinform ${isFormActive ? '' : 'active'}`}>
             <form onSubmit={(e) => {e.preventDefault(); handleShowConfirm(true); }}>
               <h3>로그인</h3>
-              <input id='login_id' type='text' placeholder='아이디' name='userId' />
+              <input id='login_id' type='text' placeholder='아이디' name='userId' ref={inputRef}/>
               <input id='login_pw' type='password' placeholder='비밀번호' name='userPassword' />
               <input type='submit' value='로그인'/>
               <a href='/Findinfo' className='forgot'>아이디, 비밀번호를 잊으셨나요?</a>
@@ -170,7 +171,7 @@ function Login() {
           <div className={`form signupform ${isFormActive ? 'active' : ''}`}>
             <form onSubmit={(e) => {e.preventDefault(); handleShowConfirm2(true); }}>
               <h3>회원가입</h3>
-              <input id='sign_id' type='text' placeholder='아이디' name='userId' />
+              <input id='sign_id' type='text' placeholder='아이디' name='userId'/>
               <input id='sign_pw' type='password' placeholder='비밀번호' name='userPw' />
               <input id='sign_nickname' type='text' placeholder='닉네임' name='nickName' />
               <input id='sign_phone' type='tel' placeholder='전화번호' name='phoneNumber' />

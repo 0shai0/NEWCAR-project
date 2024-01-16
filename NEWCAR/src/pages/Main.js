@@ -5,7 +5,7 @@ function Main() {
 
   const session = window.sessionStorage;
   const [session1, setSession] = useState([]);
-  const loginOrMyInfoLink = session.length > 0 ? '/Myinfo' : '/Login';
+  const loginOrMyInfoLink = session.length > 0 ? '/Myinfo' : '/Login'; 
 
   const [userId, setUserId] = useState('');
   const [kind, setUserPw] = useState('');
@@ -24,8 +24,8 @@ function Main() {
     setPhoneNumber(storedDays || '');
   }, []);
 
-  // 헤더, h1, .circle을 클릭 시 관련 화면으로 이동하는 코드입니다
 
+  // 헤더, h1, .circle을 클릭 시 관련 화면으로 이동하는 코드입니다
 
   useEffect(() => {
     const buttonMappings = [
@@ -69,10 +69,10 @@ function Main() {
     return removeEventListeners;
   }, []);
 
+
   // 아래 코드는 .sec.hidden${index}의 요소를
   // 클릭하면 display가 none이었던 걸 block으로 바꾸고
   // 다시 한 번 클릭 시 none이 만드는 코드입니다
-
 
   const handlePlusClick = (index) => {
 
@@ -187,9 +187,7 @@ function Main() {
     } else if (!window.sessionStorage.getItem('userId')) {
       window.location.href = "/Login";
       alert('구독 서비스는 로그인 후에 이용하실 수 있습니다.');
-    }
-
-    
+    }    
 
     const url = `http://10.10.21.64:8080/api/subscribe/${userId}?kind=Basic`;
     const response = await fetch(url, { method: "PUT" });
@@ -199,7 +197,7 @@ function Main() {
 
       if (Array.isArray(data) && data.length === 0) {
         window.location.href = "/Myinfo";
-        alert('이미 구독이 되어있습니다. \n구독 종류를 변경하시려면 [내 정보] -> [구독내역]에서 \n변경해주시길 바랍니다.');
+        alert('이미 구독이 되어있습니다. \n구독 종류를 변경하시거나 취소하시려면 \n [내 정보] -> [구독내역]에서 변경해주시길 바랍니다.');
       } else {
         const user = data[0];
 
@@ -241,16 +239,18 @@ function Main() {
       alert('구독 서비스는 로그인 후에 이용하실 수 있습니다.');
     }
 
-
     const url = `http://10.10.21.64:8080/api/subscribe/${userId}?kind=Premium`;
     const response = await fetch(url, { method: "PUT" });
 
     if (response.ok) {
       const data = await response.json();
       if (Array.isArray(data) && data.length === 0) {
+        
         window.location.href = "/Myinfo";
-        alert('이미 구독이 되어있습니다. \n구독 종류를 변경하시려면 [내 정보] -> [구독내역]에서 \n변경해주시길 바랍니다.');
+        alert('이미 구독이 되어있습니다. \n구독 종류를 변경하시거나 취소하시려면 \n [내 정보] -> [구독내역]에서 변경해주시길 바랍니다.');
+
       } else {
+
         const user = data[0];
 
         const { kind, ...userWithoutKind } = user;
@@ -260,6 +260,7 @@ function Main() {
           ...userWithoutKind,
           kind: kindValue,
           ...kindWithoutKey,
+
         };
 
         Object.entries(userWithKindSeparated).forEach(([key, value]) => {
@@ -277,6 +278,8 @@ function Main() {
 
   return (
     <div className='container-main'>
+
+      {/* 헤더 시작 */}
 
       <div>
         <header id='navbar'>
@@ -306,17 +309,17 @@ function Main() {
                 구독
               </a>
             </li>
-            <li>
-
-              {/* 로그인하면 로그인을 내 정보로 바꿔주고 href를 /Myinfo라 해줘 */}
-            
+            <li>           
               <a href={loginOrMyInfoLink}>{session.length > 0 ? '내 정보' : '로그인'}</a>
-
             </li>
           </ul>
         </header>
       </div>
 
+      {/* 헤더 끝 */}
+
+
+      {/* 첫 번째 화면 시작 */}
 
       <div className='car_video'>
         <video src='./video/Main_video.mp4' muted autoPlay loop type='video/mp4'/>
@@ -325,6 +328,10 @@ function Main() {
         </div>
       </div>
 
+      {/* 첫 번째 화면 끝 */}
+
+
+      {/* 소개 페이지 시작 */}
 
       <div className='sec film'>
         <h1 id='plus1' onClick={() => handlePlusClick(1)}>
@@ -359,6 +366,10 @@ function Main() {
         </div>
       </div>
 
+      {/* 소개 페이지 끝 */}
+
+
+      {/* 서비스 페이지 시작 */}
 
       <div className='sec film'>
         <h1 id='plus2' onClick={() => handlePlusClick(2)}>
@@ -467,6 +478,10 @@ function Main() {
       </div>
       </div>
 
+      {/* 소개 페이지 끝 */}
+
+
+      {/* 구독 페이지 시작 */}
 
       <div className='sec film'>
         <h1 id='plus3' onClick={() => handlePlusClick(3)}>
@@ -478,17 +493,11 @@ function Main() {
         </div>
       </div>
 
-
-      {/* 여기부터 구독 페이지 */}
-
       <div className='sec hidden3'>
 
         <div className='circle3' id='minus3' onClick={() => handleMinusClick(3)}>
           <div className="minus"></div>
         </div>
-
-
-        {/* 구독하기 버튼 클릭 시 구독 상황에 맞는 alert 띄우면 됨 */}
 
         <div className="subscribe">
           
@@ -542,8 +551,9 @@ function Main() {
                   </svg>
                   사고 시 100% 자사 책임
                 </p>
-                <button type='button' className="reg-btn" onClick={() => handleShowConfirm2()}>구독하기</button>
-                
+                <button type='button' className="reg-btn" onClick={() => handleShowConfirm2()}>
+                  구독하기
+                </button>               
               </div>
             </div>
           </div>
@@ -552,9 +562,13 @@ function Main() {
         
       </div>
 
-      {/* 여기까지 구독 페이지 */}
+      {/* 구독 페이지 끝 */}
 
-      <div className='sec film'></div>
+      {/* 아래는 푸터 */}
+
+      <div className='sec film'>
+        <h1>Enjoy our service!!</h1>
+      </div>
       
     </div>
   );

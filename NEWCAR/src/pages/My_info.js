@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 function My_info() {
 
   const navigate = useNavigate();
+
+  const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
+  const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
+  const nickNamePattern = /^[a-zA-Z0-9가-힣]+$/;
+  const phoneNumberPattern = /^[0-9]*$/;  
+
   const session = window.sessionStorage;
 
   const [userId, setUserId] = useState('');
@@ -17,6 +23,7 @@ function My_info() {
   const [price, setPrice] = useState('');
 
   useEffect(() => {
+
     const storedUserId = session.getItem('userId');
     const storedUserPw = session.getItem('userPw');
     const storedNickName = session.getItem('nickName');
@@ -36,30 +43,42 @@ function My_info() {
     setDays(storedDays || '');
     setPrice(storedPrice || '');
 
+
+    // 아래는 구독 시작일에서 days를 더해 구독 종료일을 구하기 위한 코드입니다
+
     if (storedSubscribeStart && storedDays) {
+
       const startDate = new Date(storedSubscribeStart);
+
       if (!isNaN(startDate.getTime())) {
+
         const endDate = new Date(startDate.getTime() + (parseInt(storedDays, 10) * 24 * 60 * 60 * 1000));
         setSubscribeEnd(endDate.toISOString().substring(0, 10));
+
       } else {
+
         setKind(null);
         setSubscribeStart(null);
         setSubscribeEnd(null);
         setPrice(null);
+
       }
     }
   }, []);
 
 
   useEffect(() => {
+
     const userId = sessionStorage.getItem('userId');
     const userPw = sessionStorage.getItem('userPw');
     const nickName = sessionStorage.getItem('nickName');
     const phoneNumber = sessionStorage.getItem('phoneNumber');
 
-    if (!userId || !userPw || !nickName || !phoneNumber) {     
+    if (!userId || !userPw || !nickName || !phoneNumber) {   
+
       navigate('/Login');   
-      alert("내 정보는 로그인 후에 접속하실 수 있습니다.");  
+      alert("내 정보는 로그인 후에 접속하실 수 있습니다."); 
+
     }
   }, [navigate]);
 
@@ -72,68 +91,49 @@ function My_info() {
     const result = window.confirm('내 정보를 수정하시겠습니까?');
   
     if (!result) {
-      alert('수정이 취소되었습니다.');
+      alert('수정을 취소했습니다.');
       return;
+    }    
+
+    if (!userIdPattern.test(userId) || !userPwPattern.test(userPw) 
+    || !nickNamePattern.test(nickName) || !phoneNumberPattern.test(phoneNumber)) {
+
+      alert("공백, /, ?등의 특수문자는 입력하실 수 없습니다.");
+      return;    
+
     }
 
-    const userIdPattern = /^[a-zA-Z0-9가-힣]+$/;
-    const userPwPattern = /^[a-zA-Z0-9가-힣]+$/;
-    const nickNamePattern = /^[a-zA-Z0-9가-힣]+$/;
-    const phoneNumberPattern = /^[0-9]*$/;  
+    const url = `http://10.10.21.64:8080/api/account/${userId}?userId=${userId}&userPw=${userPw}&nickName=${nickName}&phoneNumber=${phoneNumber}`;
+    const response = await fetch(url, { method : 'PUT' });
 
-    if (!userIdPattern.test(userId)) {
-      alert("아이디는 문자(단어)와 숫자만 입력해주세요.");
-      return;
-    }
+    if (response.ok) {
 
-    if (!userPwPattern.test(userPw)) {
-      alert("비밀번호는 문자(단어)와 숫자만 입력해주세요.");
-      return;
-    }
+      session.setItem('userId', userId);
+      session.setItem('userPw', userPw);
+      session.setItem('nickName', nickName);
+      session.setItem('phoneNumber', phoneNumber);
+      alert('수정이 완료되었습니다.');
 
-    if (!nickNamePattern.test(nickName)) {
-      alert("닉네임는 문자(단어)와 숫자만 입력해주세요.");
-      return;
-    }
-
-    if (!phoneNumberPattern.test(phoneNumber)) {
-      alert("전화번호는 숫자만 입력해주세요.");
-      return;
-    }
-  
-    try {
-
-      const url = `http://10.10.21.64:8080/api/account/${userId}?userId=${userId}&userPw=${userPw}&nickName=${nickName}&phoneNumber=${phoneNumber}`;
-      const response = await fetch(url, { method : 'PUT' });
-  
-      if (response.ok) {
-        session.setItem('userId', userId);
-        session.setItem('userPw', userPw);
-        session.setItem('nickName', nickName);
-        session.setItem('phoneNumber', phoneNumber);
-        alert('수정이 완료되었습니다.');
-      } else {
-        window.location.href = "/Myinfo";
-        alert('수정을 취소했습니다.');
-      }
-    } catch (error) {
-      console.error('Error during account update:', error);
-      alert('오류가 발생했습니다.');
+    } else {
+      window.location.href = "/Myinfo";
+      alert('동일한 아이디기 존재하여 아이디를 수정하실 수 없습니다.');
     }
   };
 
 
-  // 로그아웃 시 나오는 Alert
+  // 로그아웃 시 생성되는 Alert입니다
 
   const handleLogout = (e) => {
+
     e.preventDefault();
     window.location.href = "/";
     session.clear();
     alert('로그아웃 되었습니다.');
+
   };
 
 
-  // 회원탈퇴 시 나오는 Alert
+  // 회원탈퇴 시 생성되는 Alert입니다
 
   const handleDelete = async (e) => {
 
@@ -146,27 +146,19 @@ function My_info() {
       return;
     }
 
-    try {
-      const url = `http://10.10.21.64:8080/api/account/${userId}`;
-      const response = await fetch(url, { method: "delete" });
+    const url = `http://10.10.21.64:8080/api/account/${userId}`;
+    const response = await fetch(url, { method: "delete" });
 
-      if (response.ok) {
-        navigate("/");
-        session.clear();
-        alert('탈퇴가 완료되었습니다.');
-      } else {
-        alert('탈퇴를 취소했습니다.');
-      }
-    } catch (error) {
-      console.error('Error during account deletion:', error);
-      alert('오류가 발생했습니다.');
-    }
+    if (response.ok) {
+
+      navigate("/");
+      session.clear();
+      alert('탈퇴가 완료되었습니다.');
+      
+    } else {
+      alert('탈퇴를 취소했습니다.');
+    }   
   };
-  
-
-  // DB에서 구독 내역을 가져오는 코드
-
-
 
   // 구독 변경 시 나오는 Alert
 
@@ -208,7 +200,6 @@ function My_info() {
   };
 
 
- 
 
   return(
     <div className='login'>
@@ -285,8 +276,12 @@ function My_info() {
               </div>
               <div className='sub_btn_list'>
                 <div className='subBtn'>
-                  <button type='button' className='signinBtn' onClick={handleShowConfirm2}>구독 변경</button>
-                  <button type='button' className='signinBtn' onClick={handleShowConfirm3}>구독 취소</button>              
+                  <button type='button' className='signinBtn' onClick={handleShowConfirm2}>
+                    구독 변경
+                  </button>
+                  <button type='button' className='signinBtn' onClick={handleShowConfirm3}>
+                    구독 취소
+                  </button>              
                 </div>
               </div>
             </form>
